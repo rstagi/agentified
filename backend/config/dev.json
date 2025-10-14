@@ -1,0 +1,6 @@
+{
+  "port": 8080,
+  "logLevel": "debug",
+  "mongoDbUrl": "mongodb://localhost:27017",
+  "mongoDbName": "somedb"
+}
