@@ -20,6 +20,7 @@
     "@ai-sdk/openai": "^2.0.52",
     "@fastify/cors": "^11.1.0",
     "@fastify/mongodb": "^9.0.2",
+    "@scalar/openapi-parser": "^0.22.3",
     "ai": "^5.0.70",
     "fastify": "^5.6.1",
     "fastify-plugin": "^5.1.0",
