@@ -16,7 +16,7 @@ export function convertOperationToTool(operation: OpenAPIOperation): ToolDefinit
   const description = operation.description || operation.summary || '';
 
   // Build JSON Schema for all parameters
-  const properties: Record<string, any> = {};
+  const properties: Record<string, unknown> = {};
   const required: string[] = [];
 
   // Handle parameters (query, path, header, etc.)
@@ -35,18 +35,21 @@ export function convertOperationToTool(operation: OpenAPIOperation): ToolDefinit
 
   // Handle request body
   if (operation.requestBody) {
-    const jsonContent = operation.requestBody.content?.['application/json'];
+    const requestBody = operation.requestBody as Record<string, unknown>;
+    const content = requestBody.content as Record<string, unknown> | undefined;
+    const jsonContent = content?.['application/json'] as Record<string, unknown> | undefined;
+
     if (jsonContent?.schema) {
-      const bodySchema = jsonContent.schema;
+      const bodySchema = jsonContent.schema as Record<string, unknown>;
 
       // If body schema is an object with properties, merge them into root
       if (bodySchema.type === 'object' && bodySchema.properties) {
-        for (const [key, prop] of Object.entries(bodySchema.properties)) {
+        for (const [key, prop] of Object.entries(bodySchema.properties as Record<string, unknown>)) {
           properties[key] = prop;
         }
 
         // Merge required fields from body
-        if (bodySchema.required) {
+        if (Array.isArray(bodySchema.required)) {
           required.push(...bodySchema.required);
         }
       }

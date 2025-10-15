@@ -36,8 +36,9 @@ export class MongoDBTestHelper {
   }
 
   async clearDatabase() {
-    if (this.db) {
-      await this.db.collection('agents').deleteMany({});
+    if (this.db && this.client) {
+      await this.db.dropDatabase();
+      this.db = this.client.db(this.dbName);
     }
   }
 

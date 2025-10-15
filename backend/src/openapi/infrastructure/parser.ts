@@ -10,13 +10,13 @@ export type OpenAPIOperation = {
     name: string;
     in: string;
     required?: boolean;
-    schema?: any;
+    schema?: unknown;
     description?: string;
   }>;
-  requestBody?: any;
+  requestBody?: unknown;
 };
 
-export async function parseOpenAPISpec(spec: any): Promise<OpenAPIOperation[]> {
+export async function parseOpenAPISpec(spec: unknown): Promise<OpenAPIOperation[]> {
   // Validate the spec
   const result = await validate(spec);
 
@@ -25,26 +25,26 @@ export async function parseOpenAPISpec(spec: any): Promise<OpenAPIOperation[]> {
   }
 
   const operations: OpenAPIOperation[] = [];
-  const paths = spec.paths || {};
+  const paths = (spec as Record<string, unknown>).paths || {};
 
   // Extract all operations from all paths
-  for (const [path, pathItem] of Object.entries(paths)) {
-    const pathObj = pathItem as any;
+  for (const [path, pathItem] of Object.entries(paths as Record<string, unknown>)) {
+    const pathObj = pathItem as Record<string, unknown>;
 
     // Check all HTTP methods
     const methods = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'];
 
     for (const method of methods) {
       if (pathObj[method]) {
-        const operation = pathObj[method];
+        const operation = pathObj[method] as Record<string, unknown>;
 
         operations.push({
-          operationId: operation.operationId,
+          operationId: operation.operationId as string,
           method,
           path,
-          summary: operation.summary,
-          description: operation.description,
-          parameters: operation.parameters,
+          summary: operation.summary as string | undefined,
+          description: operation.description as string | undefined,
+          parameters: operation.parameters as OpenAPIOperation['parameters'],
           requestBody: operation.requestBody,
         });
       }
