@@ -3,9 +3,13 @@ import { type AgentModel } from "./schemas.ts";
 
 export type ConfiguredAgent = Omit<AgentModel, "model"> & {
   model: Exclude<LanguageModel, string>,
+  tools?: ToolSet,
 };
 
-export function askAgent(agent: ConfiguredAgent, chatMessages: UIMessage[]): StreamTextResult<ToolSet, string> {
+export function askAgent(
+  agent: ConfiguredAgent,
+  chatMessages: UIMessage[]
+): StreamTextResult<ToolSet, string> {
   return streamText({
     model: agent.model,
     messages: [{
@@ -13,6 +17,7 @@ export function askAgent(agent: ConfiguredAgent, chatMessages: UIMessage[]): Str
       content: agent.systemPrompt,
     },
     ...convertToModelMessages(chatMessages)],
+    ...(agent.tools && { tools: agent.tools }),
   })
 }
 
