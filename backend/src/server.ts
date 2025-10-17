@@ -3,6 +3,9 @@ import fastify from "fastify";
 import { type ZodTypeProvider, serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import { modelProviderPlugin } from "./agent/models.ts";
 import agentRoutes from "./agent/routes.ts";
+import fs from "fs";
+
+const scriptJs = fs.readFileSync('./src/widget.js');
 
 export async function build(config: Config) {
   const server = fastify({
@@ -45,6 +48,9 @@ export async function build(config: Config) {
     return 'pong\n'
   });
 
+  server.get('/widget.js', async () => {
+    return scriptJs;
+  })
   // Register routes
   server.register(agentRoutes, {
     prefix: "/agent",
